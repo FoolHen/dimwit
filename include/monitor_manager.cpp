@@ -1,4 +1,4 @@
-#include "monitormanager.h"
+#include "monitor_manager.h"
 
 MonitorManager::MonitorManager() {
     discoverMonitors();

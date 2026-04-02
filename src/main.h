@@ -16,7 +16,7 @@
 #include <QList>
 #include <QString>
 
-#include "monitormanager.h"
+#include "monitor_controller.h"
 #include "brightness_scheduler.h"
 
 class MonitorControlApp : public QApplication {
@@ -29,7 +29,7 @@ public:
 private:
     QSystemTrayIcon *m_trayIcon;
     QMenu *m_contextMenu;
-    MonitorManager *m_monitorManager;
+    MonitorController *m_monitorController;
     QCheckBox *m_syncCheckbox;
     QCheckBox *m_autoCheckbox;
     QPushButton *m_settingsButton;

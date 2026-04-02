@@ -1,4 +1,4 @@
-#include "ddccommander.h"
+#include "ddc_commander.h"
 #include <QProcess>
 #include <QThread>
 #include <QJsonDocument>

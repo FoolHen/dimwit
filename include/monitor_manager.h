@@ -1,5 +1,5 @@
-#ifndef MONITORMANAGER_H
-#define MONITORMANAGER_H
+#ifndef MONITOR_MANAGER_H
+#define MONITOR_MANAGER_H
 
 #include <QString>
 #include <QList>
@@ -25,4 +25,4 @@ private:
     static QString getDevicePathFromName(const QString& monitorName);
 };
 
-#endif // MONITORMANAGER_H
+#endif // MONITOR_MANAGER_H

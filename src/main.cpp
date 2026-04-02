@@ -1,5 +1,5 @@
 #include "main.h"
-#include "monitormanager.h"
+#include "monitor_controller.h"
 #include <QApplication>
 #include <QSystemTrayIcon>
 #include <QMenu>
@@ -15,7 +15,7 @@
 #include <QProcess>
 #include <QCheckBox>
 #include <QSharedMemory>
-#include "scheduledialog.h"
+#include "schedule_dialog.h"
 
 MonitorControlApp::MonitorControlApp(int &argc, char **argv) : QApplication(argc, argv) {
     // Create system tray icon
@@ -23,13 +23,13 @@ MonitorControlApp::MonitorControlApp(int &argc, char **argv) : QApplication(argc
     
     QCoreApplication::setApplicationName("Dimwit");
     
-    // m_monitorManager initialization only
-    m_monitorManager = new MonitorManager();
+    // m_monitorController initialization only
+    m_monitorController = new MonitorController();
     m_scheduler = new BrightnessScheduler(this);
     m_scheduler->loadConfig();
     
     // Pre-discover for background auto-updates without requiring window open
-    QList<MonitorInfo> ms = m_monitorManager->discoverMonitors();
+    QList<MonitorInfo> ms = m_monitorController->discoverMonitors();
     QList<QString> dPaths;
     for (const auto& m : ms) dPaths.append(m.devicePath);
     m_scheduler->setDevicePaths(dPaths);
@@ -105,7 +105,7 @@ void MonitorControlApp::showControlWindow() {
         }
     });
 
-    QList<MonitorInfo> monitors = m_monitorManager->discoverMonitors();
+    QList<MonitorInfo> monitors = m_monitorController->discoverMonitors();
     
     if (monitors.isEmpty()) {
         QLabel *noMonitorsLabel = new QLabel("No DDC-capable monitors found");
@@ -114,7 +114,7 @@ void MonitorControlApp::showControlWindow() {
     } else {
         for (const auto &monitor : monitors) {
             // Get initial brightness
-            int currentBrightness = m_monitorManager->getBrightness(monitor.devicePath);
+            int currentBrightness = m_monitorController->getBrightness(monitor.devicePath);
             if (currentBrightness < 0) currentBrightness = 50; // default if failed
             
             QLabel *nameLabel = new QLabel(monitor.name);

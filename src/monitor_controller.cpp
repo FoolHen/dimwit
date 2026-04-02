@@ -1,9 +1,9 @@
-#include "monitormanager.h"
+#include "monitor_controller.h"
 #include <QProcess>
 #include <QDebug>
 #include <QRegularExpression>
 
-QList<MonitorInfo> MonitorManager::discoverMonitors() {
+QList<MonitorInfo> MonitorController::discoverMonitors() {
     QList<MonitorInfo> monitors;
 
     QProcess process;
@@ -61,7 +61,7 @@ QList<MonitorInfo> MonitorManager::discoverMonitors() {
     return monitors;
 }
 
-int MonitorManager::getBrightness(const QString& devicePath) {
+int MonitorController::getBrightness(const QString& devicePath) {
     QProcess process;
     process.start("ddcutil", {"--bus", devicePath.section('-', -1), "getvcp", "10"});
     process.waitForFinished(5000);
@@ -77,7 +77,7 @@ int MonitorManager::getBrightness(const QString& devicePath) {
     return -1;
 }
 
-bool MonitorManager::setBrightness(const QString& devicePath, int level) {
+bool MonitorController::setBrightness(const QString& devicePath, int level) {
     QProcess process;
     QString busNum = devicePath.section('-', -1);  // extract number from /dev/i2c-N
     qDebug() << "Setting brightness on bus" << busNum << "to" << level;
@@ -85,7 +85,7 @@ bool MonitorManager::setBrightness(const QString& devicePath, int level) {
     return process.waitForFinished(5000) && process.exitCode() == 0;
 }
 
-int MonitorManager::getContrast(const QString& devicePath) {
+int MonitorController::getContrast(const QString& devicePath) {
     QProcess process;
     process.start("ddcutil", {"--bus", devicePath.section('-', -1), "getvcp", "12"});
     process.waitForFinished(5000);
@@ -100,7 +100,7 @@ int MonitorManager::getContrast(const QString& devicePath) {
     return -1;
 }
 
-bool MonitorManager::setContrast(const QString& devicePath, int level) {
+bool MonitorController::setContrast(const QString& devicePath, int level) {
     QProcess process;
     QString busNum = devicePath.section('-', -1);
     qDebug() << "Setting contrast on bus" << busNum << "to" << level;

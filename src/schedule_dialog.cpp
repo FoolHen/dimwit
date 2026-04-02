@@ -1,4 +1,4 @@
-#include "scheduledialog.h"
+#include "schedule_dialog.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>

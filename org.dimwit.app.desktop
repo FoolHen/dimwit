@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Dimwit
 Comment=System tray application for monitor brightness/contrast control
-Exec=/opt/dimwit/bin/Dimwit %F
+Exec=Dimwit %F
 Icon=dimwit
 Type=Application
 Categories=Utility;Graphics;

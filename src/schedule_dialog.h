@@ -1,5 +1,5 @@
-#ifndef SCHEDULEDIALOG_H
-#define SCHEDULEDIALOG_H
+#ifndef SCHEDULE_DIALOG_H
+#define SCHEDULE_DIALOG_H
 
 #include <QDialog>
 #include <QTime>
@@ -23,4 +23,4 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event) override;
 };
 
-#endif // SCHEDULEDIALOG_H
+#endif // SCHEDULE_DIALOG_H

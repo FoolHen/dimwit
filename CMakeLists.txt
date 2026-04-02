@@ -12,14 +12,14 @@ pkg_check_modules(ddcutil REQUIRED ddcutil)
 add_executable(${PROJECT_NAME}
     src/main.cpp
     src/main.h
-    src/monitormanager.cpp
-    src/monitormanager.h
+    src/monitor_controller.cpp
+    src/monitor_controller.h
     src/brightness_scheduler.cpp
     src/brightness_scheduler.h
-    src/scheduledialog.cpp
-    src/scheduledialog.h
-    include/ddccommander.cpp
-    include/ddccommander.h
+    src/schedule_dialog.cpp
+    src/schedule_dialog.h
+    include/ddc_commander.cpp
+    include/ddc_commander.h
     resources.qrc
 )
 

@@ -1,5 +1,5 @@
-#ifndef DDCCOMMANDER_H
-#define DDCCOMMANDER_H
+#ifndef DDC_COMMANDER_H
+#define DDC_COMMANDER_H
 
 #include <QString>
 #include <QList>
@@ -26,4 +26,4 @@ private:
     static MonitorInfo getMonitorInfo(const QString& devicePath);
 };
 
-#endif // DDCCOMMANDER_H
+#endif // DDC_COMMANDER_H

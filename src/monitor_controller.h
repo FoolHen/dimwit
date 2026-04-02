@@ -1,12 +1,12 @@
-#ifndef MONITORMANAGER_H
-#define MONITORMANAGER_H
+#ifndef MONITOR_CONTROLLER_H
+#define MONITOR_CONTROLLER_H
 
 #include <QString>
 #include <QList>
 #include <QPair>
-#include "ddccommander.h"
+#include "ddc_commander.h"
 
-class MonitorManager {
+class MonitorController {
 public:
     static QList<MonitorInfo> discoverMonitors();
     
@@ -18,4 +18,4 @@ public:
 
 };
 
-#endif // MONITORMANAGER_H
+#endif // MONITOR_CONTROLLER_H
