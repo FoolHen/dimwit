@@ -20,9 +20,9 @@ Dimwit is a native Linux system tray application for controlling the brightness 
 ## Screenshots
 
 <p align="center" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-<img src="screenshots/tray.png" alt="Tray" >
 <img src="screenshots/menu.png" alt="Menu" >
 <img src="screenshots/scheduler.png" alt="Scheduler" >
+<img src="screenshots/tray.png" alt="Tray" >
 </p>
 
 ## Prerequisites

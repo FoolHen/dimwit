@@ -28,6 +28,9 @@ QMap<QTime, int> BrightnessScheduler::getSchedule() const {
 
 void BrightnessScheduler::setDevicePaths(const QList<QString>& paths) {
     m_devicePaths = paths;
+    if (m_autoMode) {
+        onTick();
+    }
 }
 
 void BrightnessScheduler::setAutoModeEnabled(bool enabled) {
