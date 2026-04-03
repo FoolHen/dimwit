@@ -57,7 +57,15 @@ MonitorControlApp::MonitorControlApp(int &argc, char **argv) : QApplication(argc
 MonitorControlApp::~MonitorControlApp() {}
 
 void MonitorControlApp::showControlWindow() {
-    QWidget *window = new QWidget(nullptr);
+    if (m_controlWindow) {
+        m_controlWindow->raise();
+        m_controlWindow->activateWindow();
+        return;
+    }
+    
+    m_controlWindow = new QWidget(nullptr);
+    m_controlWindow->setAttribute(Qt::WA_DeleteOnClose);
+    QWidget *window = m_controlWindow;
     window->setWindowTitle("Dimwit");
     window->resize(350, -1);
     

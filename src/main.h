@@ -15,6 +15,7 @@
 #include <QCheckBox>
 #include <QList>
 #include <QString>
+#include <QPointer>
 
 #include "monitor_controller.h"
 #include "brightness_scheduler.h"
@@ -36,6 +37,7 @@ private:
     QList<QSlider*> m_monitorSliders;
     QList<QString> m_monitorDevicePaths;
     BrightnessScheduler *m_scheduler;
+    QPointer<QWidget> m_controlWindow;
 };
 
 #endif // MAIN_H
