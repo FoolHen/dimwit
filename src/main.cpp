@@ -179,6 +179,12 @@ void MonitorControlApp::showControlWindow() {
     // Refresh scheduler attached device paths as it might have connected/disconnected 
     m_scheduler->setDevicePaths(m_monitorDevicePaths);
     
+    connect(m_scheduler, &BrightnessScheduler::brightnessChanged, window, [this](int newBrightness) {
+        for (QSlider *slider : m_monitorSliders) {
+            slider->setValue(newBrightness);
+        }
+    });
+    
     mainLayout->addStretch();
     window->show();
 }

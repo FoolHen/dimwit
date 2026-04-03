@@ -91,6 +91,8 @@ void BrightnessScheduler::onTick() {
     int target = calculateTargetBrightness(QTime::currentTime());
     qDebug() << "Auto-scaling brightness to target:" << target;
     
+    emit brightnessChanged(target);
+    
     for (const QString& path : m_devicePaths) {
         QString busNum = path.section('-', -1);
         QProcess::startDetached("ddcutil", {"--bus", busNum, "setvcp", "10", QString::number(target)});

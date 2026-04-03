@@ -8,6 +8,7 @@
 #include <QStringList>
 
 class BrightnessScheduler : public QObject {
+    Q_OBJECT
 public:
     explicit BrightnessScheduler(QObject *parent = nullptr);
     
@@ -21,6 +22,9 @@ public:
     
     void loadConfig();
     void saveConfig();
+
+signals:
+    void brightnessChanged(int newBrightness);
 
 private:
     void onTick();
