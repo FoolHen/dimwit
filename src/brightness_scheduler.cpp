@@ -13,8 +13,8 @@ BrightnessScheduler::BrightnessScheduler(QObject *parent)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &BrightnessScheduler::onTick);
-    // Tick every 15 minutes to adjust brightness
-    m_timer->start(15 * 60 * 1000); 
+    // Tick at the configured interval to adjust brightness
+    m_timer->start(SchedulerConfig::TICK_INTERVAL_MS); 
 }
 
 void BrightnessScheduler::setSchedule(const QMap<QTime, int>& schedule) {
@@ -92,24 +92,31 @@ void BrightnessScheduler::onTick() {
     qDebug() << "Auto-scaling brightness to target:" << target;
     
     emit brightnessChanged(target);
-    
+    applyBrightnessToDDC(target);
+}
+
+void BrightnessScheduler::applyBrightnessToDDC(int targetBrightness) {
     for (const QString& path : m_devicePaths) {
         QString busNum = path.section('-', -1);
-        QProcess::startDetached("ddcutil", {"--bus", busNum, "setvcp", "10", QString::number(target)});
+        QProcess::startDetached(SchedulerConfig::DDC_COMMAND, 
+                                {"--bus", busNum, "setvcp", SchedulerConfig::VCP_BRIGHTNESS, QString::number(targetBrightness)});
     }
 }
 
-void BrightnessScheduler::loadConfig() {
-    // Hardcoded safety net defaults
+void BrightnessScheduler::loadDefaultSchedule() {
     m_schedule.clear();
     m_schedule.insert(QTime(7, 0), 20);
     m_schedule.insert(QTime(12, 0), 100);
     m_schedule.insert(QTime(18, 0), 80);
     m_schedule.insert(QTime(22, 0), 20);
+}
+
+void BrightnessScheduler::loadConfig() {
+    loadDefaultSchedule();
     
-    QString configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/dimwit";
+    QString configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + SchedulerConfig::CONFIG_SUBDIR;
     QDir().mkpath(configPath);
-    QFile file(configPath + "/schedule.json");
+    QFile file(configPath + SchedulerConfig::CONFIG_FILENAME);
     if (file.open(QIODevice::ReadOnly)) {
         QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
         QJsonObject obj = doc.object();
@@ -133,9 +140,9 @@ void BrightnessScheduler::loadConfig() {
 }
 
 void BrightnessScheduler::saveConfig() {
-    QString configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/dimwit";
+    QString configPath = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + SchedulerConfig::CONFIG_SUBDIR;
     QDir().mkpath(configPath);
-    QFile file(configPath + "/schedule.json");
+    QFile file(configPath + SchedulerConfig::CONFIG_FILENAME);
     if (file.open(QIODevice::WriteOnly)) {
         QJsonObject obj;
         obj["autoMode"] = m_autoMode;
