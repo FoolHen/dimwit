@@ -13,8 +13,8 @@ BrightnessScheduler::BrightnessScheduler(QObject *parent)
 {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &BrightnessScheduler::onTick);
-    // Tick every 30 minutes to adjust brightness
-    m_timer->start(30 * 60 * 1000); 
+    // Tick every 15 minutes to adjust brightness
+    m_timer->start(15 * 60 * 1000); 
 }
 
 void BrightnessScheduler::setSchedule(const QMap<QTime, int>& schedule) {
