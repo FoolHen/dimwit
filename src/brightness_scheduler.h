@@ -8,7 +8,7 @@
 #include <QStringList>
 
 namespace SchedulerConfig {
-    static const int TICK_INTERVAL_MS = 15 * 60 * 1000;
+    static const int TICK_INTERVAL_MS = 5 * 60 * 1000;
     static const QString CONFIG_SUBDIR = "/dimwit";
     static const QString CONFIG_FILENAME = "/schedule.json";
     static const QString DDC_COMMAND = "ddcutil";
