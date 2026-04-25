@@ -34,8 +34,10 @@ public:
 signals:
     void brightnessChanged(int newBrightness);
 
-private:
+public slots:
     void onTick();
+
+private:
     int calculateTargetBrightness(const QTime& currentTime) const;
     void loadDefaultSchedule();
     void applyBrightnessToDDC(int targetBrightness);

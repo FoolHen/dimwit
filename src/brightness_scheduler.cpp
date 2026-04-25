@@ -19,7 +19,7 @@ BrightnessScheduler::BrightnessScheduler(QObject *parent)
 
 void BrightnessScheduler::setSchedule(const QMap<QTime, int>& schedule) {
     m_schedule = schedule;
-    if (m_autoMode) onTick();
+    if (m_autoMode) QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
 }
 
 QMap<QTime, int> BrightnessScheduler::getSchedule() const {
@@ -29,14 +29,14 @@ QMap<QTime, int> BrightnessScheduler::getSchedule() const {
 void BrightnessScheduler::setDevicePaths(const QList<QString>& paths) {
     m_devicePaths = paths;
     if (m_autoMode) {
-        onTick();
+        QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
     }
 }
 
 void BrightnessScheduler::setAutoModeEnabled(bool enabled) {
     m_autoMode = enabled;
     if (m_autoMode) {
-        onTick();
+        QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
     }
 }
 
