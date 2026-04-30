@@ -6,9 +6,12 @@
 #include <QMap>
 #include <QTimer>
 #include <QStringList>
+#include <QDBusConnection>
+#include <QDBusMessage>
 
 namespace SchedulerConfig {
     static const int TICK_INTERVAL_MS = 5 * 60 * 1000;
+    static const int TICK_DELAY_MS = 0.5 * 1000;
     static const QString CONFIG_SUBDIR = "/dimwit";
     static const QString CONFIG_FILENAME = "/schedule.json";
     static const QString DDC_COMMAND = "ddcutil";
@@ -36,6 +39,11 @@ signals:
 
 public slots:
     void onTick();
+
+private slots:
+    void onScreenSaverActiveChanged(bool active);
+    void onPrepareForSleep(bool suspending);
+    void onLogindSessionUnlock(const QString& sessionId);
 
 private:
     int calculateTargetBrightness(const QTime& currentTime) const;

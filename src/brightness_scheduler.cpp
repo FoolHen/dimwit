@@ -15,11 +15,38 @@ BrightnessScheduler::BrightnessScheduler(QObject *parent)
     connect(m_timer, &QTimer::timeout, this, &BrightnessScheduler::onTick);
     // Tick at the configured interval to adjust brightness
     m_timer->start(SchedulerConfig::TICK_INTERVAL_MS); 
+
+    // Listen to standard ScreenSaver active changes on Session Bus (e.g., locking/unlocking)
+    QDBusConnection::sessionBus().connect(
+        QString(), QString(), "org.freedesktop.ScreenSaver", "ActiveChanged",
+        this, SLOT(onScreenSaverActiveChanged(bool))
+    );
+    // Fallback for GNOME
+    QDBusConnection::sessionBus().connect(
+        QString(), QString(), "org.gnome.ScreenSaver", "ActiveChanged",
+        this, SLOT(onScreenSaverActiveChanged(bool))
+    );
+    // Fallback for Cinnamon
+    QDBusConnection::sessionBus().connect(
+        QString(), QString(), "org.cinnamon.ScreenSaver", "ActiveChanged",
+        this, SLOT(onScreenSaverActiveChanged(bool))
+    );
+
+    // Listen to Systemd Logind suspend/resume on System Bus
+    QDBusConnection::systemBus().connect(
+        "org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", "PrepareForSleep",
+        this, SLOT(onPrepareForSleep(bool))
+    );
+    // Listen to Systemd Logind unlock on System Bus
+    QDBusConnection::systemBus().connect(
+        "org.freedesktop.login1", "/org/freedesktop/login1", "org.freedesktop.login1.Manager", "SessionUnlock",
+        this, SLOT(onLogindSessionUnlock(QString))
+    );
 }
 
 void BrightnessScheduler::setSchedule(const QMap<QTime, int>& schedule) {
     m_schedule = schedule;
-    if (m_autoMode) QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
+    if (m_autoMode) QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
 }
 
 QMap<QTime, int> BrightnessScheduler::getSchedule() const {
@@ -29,14 +56,14 @@ QMap<QTime, int> BrightnessScheduler::getSchedule() const {
 void BrightnessScheduler::setDevicePaths(const QList<QString>& paths) {
     m_devicePaths = paths;
     if (m_autoMode) {
-        QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
+        QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
     }
 }
 
 void BrightnessScheduler::setAutoModeEnabled(bool enabled) {
     m_autoMode = enabled;
     if (m_autoMode) {
-        QTimer::singleShot(2000, this, &BrightnessScheduler::onTick);
+        QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
     }
 }
 
@@ -101,6 +128,28 @@ void BrightnessScheduler::applyBrightnessToDDC(int targetBrightness) {
         QProcess::startDetached(SchedulerConfig::DDC_COMMAND, 
                                 {"--bus", busNum, "setvcp", SchedulerConfig::VCP_BRIGHTNESS, QString::number(targetBrightness)});
     }
+}
+
+void BrightnessScheduler::onScreenSaverActiveChanged(bool active) {
+    if (!active) {
+        qDebug() << "Screensaver deactivated (system unlocked), triggering brightness update.";
+        // Delay slightly to give monitors time to wake up fully before sending DDC commands
+        QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
+    }
+}
+
+void BrightnessScheduler::onPrepareForSleep(bool suspending) {
+    if (!suspending) {
+        qDebug() << "System resuming from sleep, triggering brightness update.";
+        // Delay slightly to give monitors time to wake up fully
+        QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
+    }
+}
+
+void BrightnessScheduler::onLogindSessionUnlock(const QString& sessionId) {
+    Q_UNUSED(sessionId);
+    qDebug() << "Logind session unlocked, triggering brightness update.";
+    QTimer::singleShot(SchedulerConfig::TICK_DELAY_MS, this, &BrightnessScheduler::onTick);
 }
 
 void BrightnessScheduler::loadDefaultSchedule() {

@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets DBus)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(ddcutil REQUIRED ddcutil)
 
@@ -25,7 +25,7 @@ add_executable(${PROJECT_NAME}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE include src)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets ${ddcutil_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::DBus ${ddcutil_LIBRARIES})
 
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 install(FILES icons/dimwit.png DESTINATION share/pixmaps)
